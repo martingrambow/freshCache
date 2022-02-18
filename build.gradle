@@ -1,0 +1,58 @@
+buildscript {
+    ext.kotlin_version = '1.5.31'
+    ext.ktorVersion = '1.6.7'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+}
+
+
+group 'de.tuberlin.mcc'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "ch.qos.logback:logback-classic:1.2.10"
+    implementation "io.ktor:ktor-client-core:$ktorVersion"
+    implementation "io.ktor:ktor-client-core-jvm:$ktorVersion"
+    implementation "io.ktor:ktor-client-apache:$ktorVersion"
+    implementation "com.xenomachina:kotlin-argparser:2.0.7"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'main.MainKt'
+    }
+    baseName 'freshCache'
+    destinationDirectory = file("$rootDir")
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+
